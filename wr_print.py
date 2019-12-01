@@ -25,9 +25,9 @@ class WrLinien:
         self.api_url = 'https://www.wienerlinien.at/ogd_realtime/monitor?rbl={}&sender={}'.format(self.rbl, self.api_key)
         self.response = requests.get(self.api_url)
         try:
-            self.response.raise_for_status()					# Check if HTTP response code is 200.print(response)
+            self.response.raise_for_status()					
             return self.response
-        except requests.exceptions.HTTPError as ex: 	# If not, throw a exception and print the error message.
+        except requests.exceptions.HTTPError as ex: 	
             logging.warning(ex)
 
     def requestData(self):
