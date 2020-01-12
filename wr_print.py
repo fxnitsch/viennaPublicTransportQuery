@@ -19,7 +19,7 @@ class WrLinien:
             logging.info('Loading yaml file successful.')
             return self.config
 
-    def setup(self):
+    def requestData(self):
         self.api_url = 'https://www.wienerlinien.at/ogd_realtime/monitor?rbl={}'.format(self.rbl)
         self.response = requests.get(self.api_url)
         try:
@@ -28,7 +28,7 @@ class WrLinien:
         except requests.exceptions.HTTPError as ex: 	
             logging.warning(ex)
 
-    def requestData(self):
+    def processData(self):
         output = []
         try:
             for i in range(0, 2):
@@ -47,8 +47,8 @@ class WrLinien:
     def doQuery(self):
         for element in self.config['rbl']:
             wrLinien.rbl = self.config['rbl'][element]
-            wrLinien.setup()
             wrLinien.requestData()
+            wrLinien.processData()
         print()
 
 
