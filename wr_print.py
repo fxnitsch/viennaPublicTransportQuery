@@ -2,7 +2,6 @@
 
 import yaml
 import requests
-import time
 from threading import Timer
 import logging
 logging.basicConfig(level=logging.ERROR)
@@ -10,7 +9,6 @@ logging.basicConfig(level=logging.ERROR)
 
 class WrLinien:
     def __init__(self):
-        self.api_key = None
         self.api_url = None
         self.config = self.loadConfig()
         self.response = None
@@ -22,7 +20,7 @@ class WrLinien:
             return self.config
 
     def setup(self):
-        self.api_url = 'https://www.wienerlinien.at/ogd_realtime/monitor?rbl={}&sender={}'.format(self.rbl, self.api_key)
+        self.api_url = 'https://www.wienerlinien.at/ogd_realtime/monitor?rbl={}'.format(self.rbl)
         self.response = requests.get(self.api_url)
         try:
             self.response.raise_for_status()					
@@ -49,7 +47,6 @@ class WrLinien:
     def doQuery(self):
         for element in self.config['rbl']:
             wrLinien.rbl = self.config['rbl'][element]
-            wrLinien.api_key = self.config['keys']['test_key']
             wrLinien.setup()
             wrLinien.requestData()
         print()
@@ -64,6 +61,6 @@ class RepeatTimer(Timer):
 if __name__ == '__main__':
     wrLinien = WrLinien()
 
-    refresh_time = 1
+    refresh_time = 5
     timer = RepeatTimer(refresh_time, wrLinien.doQuery)
     timer.start()

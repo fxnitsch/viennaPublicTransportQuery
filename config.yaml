@@ -1,7 +1,3 @@
-keys:
-  test_key: YOUR_KEY
-  production_key: YOUR_KEY
-
 rbl:
   Palffygasse_Direction Schottentor: 233
   Palffygasse_Direction Neuwaldegg: 221
