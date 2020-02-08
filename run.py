@@ -32,17 +32,17 @@ class WrLinien:
             return self.response
         except Exception as ex:
             self.excount += 1
-            logging.warning(ex)
+            logging.debug(ex)
 
     def saveData(self):
-        data = self.response.json()
         path = self.config['paths']['data_storage']
         filename = str(wrLinien.rbl) + '_' + time.strftime("%Y%m%d_%H%M%S")
         try:
+            data = self.response.json()
             with open(path + filename, 'w') as outfile:
                 json.dump(data, outfile)
                 self.stopcount += 1
-        except:
+        except Exception:
             self.excount += 1
             logging.debug("Something went wrong while trying to save file {}".format(filename))
 
