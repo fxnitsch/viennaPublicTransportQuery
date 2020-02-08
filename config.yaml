@@ -1,3 +1,5 @@
+paths:
+  data_storage: './data/'
+
 rbl:
-  Palffygasse_Direction Schottentor: 233
-  Palffygasse_Direction Neuwaldegg: 221
+  43_r: [221, 233]
