@@ -14,6 +14,7 @@ class WrLinien:
         self.api_url = None
         self.config = self.loadConfig()
         self.response = None
+        self.dataOut = {}
         self.batchnumber = 0
         self.stopcount = 0
         self.excount = 0
@@ -27,33 +28,33 @@ class WrLinien:
     def requestData(self):
         self.api_url = 'https://www.wienerlinien.at/ogd_realtime/monitor?rbl={}'.format(self.rbl)
         try:
-            self.response = requests.get(self.api_url, timeout=25)
-            self.response.raise_for_status()
-            return self.response
+            self.response = requests.get(self.api_url, timeout=15)
         except Exception as ex:
             self.excount += 1
-            logging.debug(ex)
+            return logging.exception(ex)
+        self.response.raise_for_status()
+        self.dataOut[self.rbl] = self.response.json()
+        self.stopcount += 1
 
     def saveData(self):
         path = self.config['paths']['data_storage']
-        filename = str(wrLinien.rbl) + '_' + time.strftime("%Y%m%d_%H%M%S")
+        filename = time.strftime("%Y%m%d_%H%M%S")
         try:
-            data = self.response.json()
             with open(path + filename, 'w') as outfile:
-                json.dump(data, outfile)
-                self.stopcount += 1
+                json.dump(self.dataOut, outfile)
         except Exception:
             self.excount += 1
             logging.debug("Something went wrong while trying to save file {}".format(filename))
 
     def doParsing(self):
         wrLinien.resetCount()
+        self.dataOut.clear()
         for line, stops in self.config['rbl'].items():
             random.shuffle(stops)
             for i in stops:
                 wrLinien.rbl = i
                 wrLinien.requestData()
-                wrLinien.saveData()
+        wrLinien.saveData()
         self.batchnumber += 1
         logging.info("Completed batch #{} at {} for {} stops causing {} exception(s)".format(self.batchnumber,
                                                                                              time.strftime("%Y%m%d_%H%M%S"),
